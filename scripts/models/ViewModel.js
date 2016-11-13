@@ -142,6 +142,7 @@ var ViewModel = function () {
             selected,
             cancelled);
         this.teamPicker(vm);
+        $('#teamSelectText').focus();
     };
 
     return this;

@@ -31,6 +31,13 @@ var PickerViewModel = function (teams, selected, cancelled) {
         selected(team.id);
     };
 
+    this.teamSelectedIfOne = function () {
+        var filteredTeams = this.filteredTeams();
+        if (filteredTeams.length === 1) {
+            selected(filteredTeams[0].id);
+        }
+    };
+
     // Handler when selection is cancelled.
     this.cancelled = function () { cancelled(); };
 };

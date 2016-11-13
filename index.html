@@ -16,7 +16,9 @@
     <div class="teamSelect" data-bind="with: teamPicker">
         <div class="mask" data-bind="click: function () { $data.cancelled(); }"></div>
         <div class="teams">
-            <input type="text" data-bind="textInput: selectTeamFilter"></input>
+            <form data-bind="submit: teamSelectedIfOne">
+                <input id="teamSelectText" type="text" data-bind="textInput: selectTeamFilter"></input>
+            </form>
             <ol data-bind="foreach: filteredTeams">
                 <li>
                     <button class="team" data-bind="text: name, click: function () { $parent.teamSelected($data); }"></button>
