@@ -19,8 +19,8 @@
             <form data-bind="submit: teamSelectedIfOne">
                 <input id="teamSelectText" type="text" data-bind="textInput: selectTeamFilter"></input>
             </form>
-            <ol data-bind="foreach: filteredTeams">
-                <li>
+            <ol data-bind="foreach: teams">
+                <li data-bind="visible: $parent.selectTeamTest()($data)">
                     <button class="team" data-bind="text: name, click: function () { $parent.teamSelected($data); }"></button>
                 </li>
             </ol>

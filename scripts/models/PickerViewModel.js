@@ -20,12 +20,6 @@ var PickerViewModel = function (teams, selected, cancelled) {
         }
     }, this);
 
-    // Array of teams that match the filter.
-    this.filteredTeams = ko.computed(function () {
-        var test = this.selectTeamTest();
-        return $.grep(this.teams, function (t) { return test(t); });
-    }, this);
-
     // Handler when a team is selected.
     this.teamSelected = function (team) {
         selected(team.id);
