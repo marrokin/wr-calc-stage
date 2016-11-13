@@ -120,40 +120,28 @@ var ViewModel = function () {
         return sorted;
     }, this);
 
-    // Selecting a team. Move this all to its own view model?
-    this.selectTeamFilter = ko.observable('');
-    this.selectTeamTest = ko.computed(function () {
-        var selectTeamFilter = this.selectTeamFilter();
-        try
-        {
-            var re = new RegExp(selectTeamFilter, 'i');
-            return function (team) { return re.test(team.name); };
-        }
-        catch (e)
-        {
-            selectTeamFilter = selectTeamFilter.toLowerCase();
-            return function (team) { return team.name.toLowerCase().indexOf(selectTeamFilter) > -1 }; 
-        }
-    }, this);
-    this.selectTeam = ko.observable();
-    this.teamSelected = function (team) {
-        var selectTeam = this.selectTeam();
-        if (!selectTeam) {
-            return;
-        }
+    // Selecting a team.
+    this.teamPicker = ko.observable();
+    this.selectTeam = function (fixture, isHome) {
+        var teamPicker = this.teamPicker;
+        var selected = function (id) {
+            if (isHome) {
+                fixture.homeId(id);
+            } else {
+                fixture.awayId(id);
+            }
 
-        if (selectTeam.home) {
-            selectTeam.fixture.homeId(team.id);
-        } else {
-            selectTeam.fixture.awayId(team.id);
-        }
+            teamPicker(null);
+        };
+        var cancelled = function () {
+            teamPicker(null);
+        };
 
-        this.selectTeamFilter('');
-        this.selectTeam(null);
-    };
-    this.teamSelectCancelled = function () {
-        this.selectTeamFilter('');
-        this.selectTeam(null);
+        var vm = new PickerViewModel(
+            $.map(this.baseRankings(), function (r) { return r.team; }),
+            selected,
+            cancelled);
+        this.teamPicker(vm);
     };
 
     return this;
