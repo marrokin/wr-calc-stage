@@ -120,5 +120,41 @@ var ViewModel = function () {
         return sorted;
     }, this);
 
+    // Selecting a team. Move this all to its own view model?
+    this.selectTeamFilter = ko.observable('');
+    this.selectTeamTest = ko.computed(function () {
+        var selectTeamFilter = this.selectTeamFilter();
+        try
+        {
+            var re = new RegExp(selectTeamFilter, 'i');
+            return function (team) { return re.test(team.name); };
+        }
+        catch (e)
+        {
+            selectTeamFilter = selectTeamFilter.toLowerCase();
+            return function (team) { return team.name.toLowerCase().indexOf(selectTeamFilter) > -1 }; 
+        }
+    }, this);
+    this.selectTeam = ko.observable();
+    this.teamSelected = function (team) {
+        var selectTeam = this.selectTeam();
+        if (!selectTeam) {
+            return;
+        }
+
+        if (selectTeam.home) {
+            selectTeam.fixture.homeId(team.id);
+        } else {
+            selectTeam.fixture.awayId(team.id);
+        }
+
+        this.selectTeamFilter('');
+        this.selectTeam(null);
+    };
+    this.teamSelectCancelled = function () {
+        this.selectTeamFilter('');
+        this.selectTeam(null);
+    };
+
     return this;
 };

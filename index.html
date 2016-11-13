@@ -12,6 +12,18 @@
 <script src="scripts/models/FixtureViewModel.js" type="text/javascript" ></script>
 </head>
 <body>
+    <div class="teamSelect" data-bind="if: selectTeam">
+        <div class="mask" data-bind="click: function () { $data.teamSelectCancelled(); }"></div>
+        <div class="teams">
+            <input type="text" data-bind="textInput: selectTeamFilter"></input>
+            <ol data-bind="foreach: $.grep($data.teams(), function (t) { return selectTeamTest()(t); })">
+                <li>
+                    <button class="team" data-bind="text: name, click: function () { $parent.teamSelected($data); }"></button>
+                </li>
+            </ol>
+        </div>
+    </div>
+
     <div id="rankings">
         <div data-bind="if: shownRankings">
             <input type="radio" name="rankings" value="original" data-bind="checked: shownRankings">Original
@@ -70,11 +82,15 @@
                 <tr><th>Home team</th><th colspan='2'>Score</th><th>Away team</th><th title='No Home Advantage'>NHA</th><th title='Is Rugby World Cup match'>RWC</th></tr>
             </thead>
             <tbody data-bind="foreach: fixtures">
-                <tr data-bind="style: { 'background-color' : ($data.isValid() ? '#dfd' : '#fdd') }">
-                    <td><select data-bind="options: $parent.teams, optionsText: 'name', optionsValue: 'id', value: homeId, optionsCaption: 'Home...'"></select></td>
+                <tr class="fixture" data-bind="style: { 'background-color' : ($data.isValid() ? '#dfd' : '#fdd') }">
+                    <td>
+                        <button class="team" data-bind="text: $parent.rankingsById()[$data.homeId()] ? $parent.rankingsById()[$data.homeId()].team.name : 'Home...', click: function () { $parent.selectTeam({ fixture: $data, home: true }) }"></button>
+                    </td>
                     <td><input type="number" min="0" data-bind="value: homeScore" /></td>
                     <td><input type="number" min="0" data-bind="value: awayScore" /></td>
-                    <td><select data-bind="options: $parent.teams, optionsText: 'name', optionsValue: 'id', value: awayId, optionsCaption: 'Away...'"></select></td>
+                    <td>
+                        <button class="team" data-bind="text: $parent.rankingsById()[$data.awayId()] ? $parent.rankingsById()[$data.awayId()].team.name : 'Away...', click: function () { $parent.selectTeam({ fixture: $data, home: false }) }"></button>
+                    </td>
                     <td><input type="checkbox" data-bind="checked: noHome" /></td>
                     <td><input type="checkbox" data-bind="checked: isRwc" /></td>
                     <td><button data-bind="click: function () { $parent.fixtures.remove($data); }">x</button></td>
